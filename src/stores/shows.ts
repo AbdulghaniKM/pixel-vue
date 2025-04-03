@@ -1,11 +1,11 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import type { Movie, MovieGenre } from "../../types/movie";
-import { getGenres, getMovies, searchMovies } from "../services/movies";
+import type { Show, ShowGenre } from "../../types/shows";
+import { getGenres, getShows, searchShows } from "../services/shows";
 
-export const useMovieStore = defineStore("movies", () => {
-  const movies = ref<Movie[]>([]);
-  const genres = ref<MovieGenre[]>([]);
+export const useShowStore = defineStore("shows", () => {
+  const shows = ref<Show[]>([]);
+  const genres = ref<ShowGenre[]>([]);
   const currentPage = ref(1);
   const totalPages = ref(1);
   const isLoading = ref(false);
@@ -13,20 +13,20 @@ export const useMovieStore = defineStore("movies", () => {
   const selectedGenreId = ref<number>();
   const isSearchMode = ref(false);
 
-  const filteredMovies = computed(() => {
-    let filtered = [...movies.value];
+  const filteredShows = computed(() => {
+    let filtered = [...shows.value];
 
     // Apply genre filter if there's a selected genre
     if (selectedGenreId.value) {
-      filtered = filtered.filter((movie) =>
-        movie.genre_ids.includes(selectedGenreId.value!)
+      filtered = filtered.filter((show) =>
+        show.genre_ids.includes(selectedGenreId.value!)
       );
     }
 
     return filtered;
   });
 
-  async function fetchMovies(page?: number) {
+  async function fetchShows(page?: number) {
     try {
       isLoading.value = true;
       if (page) {
@@ -35,18 +35,18 @@ export const useMovieStore = defineStore("movies", () => {
 
       let data;
       if (isSearchMode.value && searchQuery.value) {
-        data = await searchMovies(searchQuery.value, currentPage.value);
+        data = await searchShows(searchQuery.value, currentPage.value);
       } else {
-        data = await getMovies(currentPage.value);
+        data = await getShows(currentPage.value);
       }
 
       if (data) {
-        movies.value = data.results;
+        shows.value = data.results;
         totalPages.value = Math.min(data.total_pages, 500); // TMDB limits to 500 pages
       }
     } catch (error) {
-      console.error("Error fetching movies:", error);
-      movies.value = [];
+      console.error("Error fetching shows:", error);
+      shows.value = [];
       totalPages.value = 1;
     } finally {
       isLoading.value = false;
@@ -65,7 +65,7 @@ export const useMovieStore = defineStore("movies", () => {
     searchQuery.value = query;
     isSearchMode.value = !!query;
     currentPage.value = 1; // Reset to first page when searching
-    await fetchMovies();
+    await fetchShows();
   }
 
   function setSelectedGenre(genreId: number | undefined) {
@@ -73,7 +73,7 @@ export const useMovieStore = defineStore("movies", () => {
   }
 
   return {
-    movies,
+    shows,
     genres,
     currentPage,
     totalPages,
@@ -81,8 +81,8 @@ export const useMovieStore = defineStore("movies", () => {
     searchQuery,
     selectedGenreId,
     isSearchMode,
-    filteredMovies,
-    fetchMovies,
+    filteredShows,
+    fetchShows,
     fetchGenres,
     setSearchQuery,
     setSelectedGenre,
