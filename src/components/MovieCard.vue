@@ -99,20 +99,27 @@
 import type { Movie, MovieGenre } from "../../types/movie";
 import { Icon } from "@iconify/vue";
 import { popUp, hoverBounce } from "../constants/motion";
-
 const props = defineProps<{
   movie: Movie;
   genres: MovieGenre[];
 }>();
-
 const getGenreNames = (genreIds: number[]) => {
   return genreIds
     .map((id) => props.genres.find((g) => g.id === id)?.name)
     .filter((name) => name !== undefined)
     .slice(0, 3);
 };
-
 defineEmits<{
   (e: "click", movie: Movie): void;
 }>();
 </script>
+<style scoped>
+::selection {
+  background-color: var(--color-secondary-500);
+  color: var(--color-primary-900);
+}
+::-moz-selection {
+  background-color: var(--color-secondary-500);
+  color: var(--color-primary-900);
+}
+</style>
