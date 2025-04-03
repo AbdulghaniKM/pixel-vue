@@ -1,6 +1,6 @@
 <template>
   <Header />
-  <main class="min-h-screen">
+  <main class="min-h-screen bg-primary-700 py-4">
     <slot />
   </main>
   <Footer />

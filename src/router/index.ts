@@ -1,7 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router";
+import Home from "../pages/home.vue";
 
 const router = createRouter({
   history: createWebHistory(),
-  routes: [],
+  routes: [
+    {
+      path: "/",
+      component: Home,
+    },
+  ],
 });
 export default router;
